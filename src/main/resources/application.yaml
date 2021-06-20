@@ -1,6 +1,7 @@
 application:
   queues:
     deleted-files: files-deleted-social-queue
+    storage-path: /home/fileshares-archiver/archived-files
 
 spring:
   datasource:
