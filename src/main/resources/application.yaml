@@ -12,4 +12,4 @@ spring:
     hibernate:
       ddl-auto: update
   rabbitmq:
-    host: rabbitmq:5672
+    host: rabbitmq
