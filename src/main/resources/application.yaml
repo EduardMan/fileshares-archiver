@@ -1,7 +1,8 @@
 application:
+  storage-path: /home/fileshares-archiver/archived-files
   queues:
     deleted-files: files-deleted-social-queue
-    storage-path: /home/fileshares-archiver/archived-files
+    files-for-archivation: social-low-archiver-queue,social-medium-archiver-queue,social-low-archiver-queue
 
 spring:
   datasource:

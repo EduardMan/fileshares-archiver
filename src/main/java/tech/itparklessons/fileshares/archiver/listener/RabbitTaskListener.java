@@ -32,7 +32,7 @@ public class RabbitTaskListener {
     @Value("${application.storage-path}")
     private String storagePath;
 
-    @RabbitListener(queues = "#{'${application.queues}'.split(',')}")
+    @RabbitListener(queues = "#{'${application.queues.files-for-archivation}'.split(',')}")
     public void archivateFile(ArchiveFileRabbitMessage message) throws IOException {
         File file = filesClient.getFile(message.getFileUUID());
         String fileName = RandomStringUtils.random(15, true, true);
