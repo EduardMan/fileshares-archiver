@@ -1,0 +1,6 @@
+application:
+  queues:
+    deleted-files: files-deleted-social-queue
+
+server:
+  port: 8084
