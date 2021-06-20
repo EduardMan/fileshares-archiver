@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  fileshare-account-service:
+  fileshares-archiver-service:
     image: ghcr.io/eduardman/fileshares-archiver:latest
     build: .
     depends_on:
@@ -8,6 +8,6 @@ services:
   fileshares-archiver-db:
     image: postgres
     environment:
-      - POSTGRES_DB=fileshares_account
+      - POSTGRES_DB=fileshares_archiver
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

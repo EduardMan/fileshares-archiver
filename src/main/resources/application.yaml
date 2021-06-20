@@ -2,5 +2,11 @@ application:
   queues:
     deleted-files: files-deleted-social-queue
 
-server:
-  port: 8084
+spring:
+  datasource:
+    url: jdbc:postgresql://fileshares-archiver-db:5462/fileshares_archiver
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
