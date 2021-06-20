@@ -4,7 +4,7 @@ application:
 
 spring:
   datasource:
-    url: jdbc:postgresql://fileshares-archiver-db:5462/fileshares_archiver
+    url: jdbc:postgresql://fileshares-archiver-db:5432/fileshares_archiver
     username: postgres
     password: password
   jpa:
