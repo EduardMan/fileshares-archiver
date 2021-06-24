@@ -13,5 +13,4 @@ import java.util.UUID;
 public class ArchiveFileRabbitMessage implements Serializable {
     private UUID fileUUID;
     private int compressionLevel;
-    private String originalFileName;
 }

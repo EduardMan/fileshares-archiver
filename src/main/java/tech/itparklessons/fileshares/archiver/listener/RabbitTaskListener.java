@@ -5,16 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import tech.itparklessons.fileshares.archiver.client.FilesClient;
 import tech.itparklessons.fileshares.archiver.repository.FilesharesArchiverFileRepository;
 import tech.itparklessons.fileshares.social.model.dto.ArchiveFileRabbitMessage;
 import tech.itparklessons.fileshares.archiver.model.entity.FilesharesArchiverFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,16 +33,18 @@ public class RabbitTaskListener {
 
     @RabbitListener(queues = "#{'${application.queues.files-for-archivation}'.split(',')}")
     public void archivateFile(ArchiveFileRabbitMessage message) throws IOException {
-        File file = filesClient.getFile(message.getFileUUID());
-        String fileName = RandomStringUtils.random(15, true, true);
+        ResponseEntity<Resource> file = filesClient.getFile(message.getFileUUID());
+        String fileName = RandomStringUtils.random(25, true, true);
         String fullFileName = getFullStoragePath() + fileName + ".zip";
+        File fileArchive = new File(getFullStoragePath());
+        fileArchive.mkdirs();
 
         try (FileOutputStream fos = new FileOutputStream(fullFileName);
              ZipOutputStream zipOut = new ZipOutputStream(fos);
-             FileInputStream fis = new FileInputStream(file);
+             InputStream fis = file.getBody().getInputStream();
         ) {
             zipOut.setLevel(message.getCompressionLevel());
-            ZipEntry zipEntry = new ZipEntry(message.getOriginalFileName());
+            ZipEntry zipEntry = new ZipEntry(file.getBody().getFilename());
             zipOut.putNextEntry(zipEntry);
             byte[] bytes = new byte[1024];
             int length;
@@ -57,7 +58,7 @@ public class RabbitTaskListener {
         filesharesArchiverFile.setFileName(fileName);
         filesharesArchiverFile.setExtension("zip");
         filesharesArchiverFile.setPath(getFullStoragePath());
-        filesharesArchiverFile.setOriginalName(message.getOriginalFileName());
+        filesharesArchiverFile.setOriginalName(file.getBody().getFilename());
         filesharesArchiverFile.setSize(new File(fullFileName).length());
 
         filesharesArchiverFileRepository.save(filesharesArchiverFile);
