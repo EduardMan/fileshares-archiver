@@ -25,7 +25,7 @@ public class ArchiverServiceImpl implements ArchiverService {
         if (isAccessible) {
             FilesharesArchiverFile filesharesArchiveFile = filesharesArchiverFileRepository.findByFilesharesFilesFileUUID(fileUUID);
             String fullFileName = filesharesArchiveFile.getPath() + filesharesArchiveFile.getFileName() + "." + filesharesArchiveFile.getExtension();
-            return new Pair<>(filesharesArchiveFile.getOriginalName(), new File(fullFileName));
+            return new Pair<>(filesharesArchiveFile.getFileName() + "." + filesharesArchiveFile.getExtension(), new File(fullFileName));
         }
 
         throw new RuntimeException("");
@@ -38,7 +38,7 @@ public class ArchiverServiceImpl implements ArchiverService {
         if (filesharesSocialFile != null) {
             FilesharesArchiverFile filesharesArchiveFile = filesharesArchiverFileRepository.findByFilesharesFilesFileUUID(filesharesSocialFile.getFilesServiceFileUUID());
             String fullFileName = filesharesArchiveFile.getPath() + filesharesArchiveFile.getFileName() + "." + filesharesArchiveFile.getExtension();
-            return new Pair<>(filesharesArchiveFile.getOriginalName(), new File(fullFileName));
+            return new Pair<>(filesharesArchiveFile.getFileName() + "." + filesharesArchiveFile.getExtension(), new File(fullFileName));
         }
 
         return null;
