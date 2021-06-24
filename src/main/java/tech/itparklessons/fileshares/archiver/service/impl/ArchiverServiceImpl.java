@@ -24,7 +24,7 @@ public class ArchiverServiceImpl implements ArchiverService {
         boolean isAccessible = socialClient.checkAccess(fileUUID);
         if (isAccessible) {
             FilesharesArchiverFile filesharesArchiveFile = filesharesArchiverFileRepository.findByFilesharesFilesFileUUID(fileUUID);
-            String fullFileName = filesharesArchiveFile.getPath() + filesharesArchiveFile.getFileName() + filesharesArchiveFile.getExtension();
+            String fullFileName = filesharesArchiveFile.getPath() + filesharesArchiveFile.getFileName() + "." + filesharesArchiveFile.getExtension();
             return new Pair<>(filesharesArchiveFile.getOriginalName(), new File(fullFileName));
         }
 
