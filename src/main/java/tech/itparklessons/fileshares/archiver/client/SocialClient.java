@@ -7,7 +7,7 @@ import tech.itparklessons.fileshares.archiver.model.dto.FilesharesSocialFile;
 
 import java.util.UUID;
 
-@FeignClient(url = "http://fileshares-social-service:8080//internal/social", name = "social")
+@FeignClient(url = "http://fileshares-social-service:8080/internal/social", name = "social")
 public interface SocialClient {
     @GetMapping("/checkAccess")
     boolean checkAccess(@RequestParam UUID fileUUID);
