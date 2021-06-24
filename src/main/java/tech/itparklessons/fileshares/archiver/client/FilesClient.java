@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
-@FeignClient(url = "http://localhost:8083/internal/files", name = "file")
+@FeignClient(url = "http://fileshares-files-service:8080/internal/files", name = "file")
 public interface FilesClient {
     @GetMapping("/getFile")
     ResponseEntity<Resource> getFile(@RequestParam UUID fileUUID);

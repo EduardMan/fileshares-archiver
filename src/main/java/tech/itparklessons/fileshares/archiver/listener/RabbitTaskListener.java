@@ -1,19 +1,25 @@
 package tech.itparklessons.fileshares.archiver.listener;
 
 
+import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import tech.itparklessons.fileshares.archiver.client.FilesClient;
+import tech.itparklessons.fileshares.archiver.model.entity.FilesharesArchiverFile;
 import tech.itparklessons.fileshares.archiver.repository.FilesharesArchiverFileRepository;
 import tech.itparklessons.fileshares.social.model.dto.ArchiveFileRabbitMessage;
-import tech.itparklessons.fileshares.archiver.model.entity.FilesharesArchiverFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,8 +37,8 @@ public class RabbitTaskListener {
     @Value("${application.storage-path}")
     private String storagePath;
 
-    @RabbitListener(queues = "#{'${application.queues.files-for-archivation}'.split(',')}")
-    public void archivateFile(ArchiveFileRabbitMessage message) throws IOException {
+    @RabbitListener(queues = "#{'${application.queues.files-for-archivation}'.split(',')}", ackMode = "MANUAL")
+    public void archivateFile(ArchiveFileRabbitMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         ResponseEntity<Resource> file = filesClient.getFile(message.getFileUUID());
         String fileName = RandomStringUtils.random(25, true, true);
         String fullFileName = getFullStoragePath() + fileName + ".zip";
@@ -62,6 +68,8 @@ public class RabbitTaskListener {
         filesharesArchiverFile.setSize(new File(fullFileName).length());
 
         filesharesArchiverFileRepository.save(filesharesArchiverFile);
+
+        channel.basicAck(tag, false);
     }
 
     @RabbitListener(queues = "${application.queues.deleted-files}")
