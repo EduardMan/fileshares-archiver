@@ -17,4 +17,4 @@ spring:
 
 opentracing:
   jaeger:
-    service-name: fileshares-social
+    service-name: fileshares-archiver
